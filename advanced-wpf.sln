@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualStates", "VisualState
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM", "MVVM\MVVM.csproj", "{A67CB571-2AF1-418D-82CD-560F4BDD7FD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControl", "CustomControl\CustomControl.csproj", "{F50381A7-7208-47E6-90A1-FC87D0A7A22E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A67CB571-2AF1-418D-82CD-560F4BDD7FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A67CB571-2AF1-418D-82CD-560F4BDD7FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A67CB571-2AF1-418D-82CD-560F4BDD7FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50381A7-7208-47E6-90A1-FC87D0A7A22E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50381A7-7208-47E6-90A1-FC87D0A7A22E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50381A7-7208-47E6-90A1-FC87D0A7A22E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50381A7-7208-47E6-90A1-FC87D0A7A22E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
