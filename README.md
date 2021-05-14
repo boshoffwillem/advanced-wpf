@@ -82,10 +82,10 @@ DefaultStyleKeyProperty:
 
 ```c#
 static AnalogClock()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogClock), 
-                new FrameworkPropertyMetadata(typeof(AnalogClock)));
-        }
+{
+    DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogClock), 
+        new FrameworkPropertyMetadata(typeof(AnalogClock)));
+}
 ```
 
 This tells the application that it needs to apply some external style to the control.
@@ -97,3 +97,76 @@ The OverrideMetadata method will look in Themes/Generic.xaml for any custom styl
 
 When adding behaviour or logic to the control be sure to do it in the override of OnApplyTemplate.
 Otherwise you might try to access the template components/PARTs before it's applied.
+
+## 4.Dependency Properties
+
+Dependency properties are properties for XAML components/controls, like the analog clock built in Section 3.
+These properties allow to add WPF features to your components, like data bindings, animations, etc.
+
+Let's add a dependency property to the analog clock to control whether the analog clock should be shown or not.
+
+### 4.1 Steps
+
+Add a static dependency property in the <control>.cs file and register it.
+
+```c#
+public static DependencyProperty ShowSecondsProperty = 
+            DependencyProperty.Register("ShowSeconds", typeof(bool), typeof(AnalogClock),
+                new PropertyMetadata(true));
+```
+
+No we need a property in <control>.cs that hooks up to this dependency property.
+
+```c#
+public bool ShowSeconds
+{
+    get => (bool) GetValue(ShowSecondsProperty);
+    set => SetValue(ShowSecondsProperty, value);
+}
+```
+
+No the dependency property is set up, but it doesn't do anything yet.
+We need to now tie it to the component that will use the component (in this case the SecondHand).
+There is a couple of ways to set up this binding.
+
+**First way**
+
+```c#
+_secondHand = Template.FindName("PART_SecondHand", this) as Line;
+Binding showSecondHandBinding = new Binding
+{
+    Path = new PropertyPath(nameof(ShowSeconds)),
+    Source = this,
+    Converter = new BooleanToVisibilityConverter()
+};
+_secondHand.SetBinding(VisibilityProperty, showSecondHandBinding);
+```
+
+This sets up the binding between the second hand and our dependency property, 
+and it specifies that the value of the dependency property sets the visibility of the component. 
+
+This should make the property available on the control:
+
+```xaml
+<controls:AnalogClock ShowSeconds="False" />
+```
+
+**Second Way**
+
+There is another, easier, way to set up this binding: a TemplateBinding.
+
+Go to the style of the analog clock.
+
+```xaml
+<ControlTemplate.Resources>
+    <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter" />
+</ControlTemplate.Resources>
+<Line Stroke="Red"
+    StrokeThickness="1"
+    VerticalAlignment="Center"
+    HorizontalAlignment="Center"
+    X1="0"
+    X2="-100"
+    x:Name="PART_SecondHand"
+    Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}" />
+```
