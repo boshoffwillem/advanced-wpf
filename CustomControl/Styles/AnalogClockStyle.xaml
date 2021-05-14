@@ -5,6 +5,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:AnalogClock">
+                    <ControlTemplate.Resources>
+                        <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter" />
+                    </ControlTemplate.Resources>
                     <Grid RenderTransformOrigin="0.5 0.5">
                         <Grid.RenderTransform>
                             <RotateTransform Angle="90" />
@@ -29,7 +32,8 @@
                               HorizontalAlignment="Center"
                               X1="0"
                               X2="-100"
-                              x:Name="PART_SecondHand" />
+                              x:Name="PART_SecondHand"
+                              Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <Ellipse Stroke="Black"
                                  StrokeThickness="1"
                                  Width="210"
