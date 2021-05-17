@@ -9,6 +9,7 @@
         Title="MainWindow" Height="600" Width="400">
     <StackPanel>
         <controls:AnalogClock ShowSeconds="False" />
-        <controls:AnalogClock />
+        <controls:AnalogClock TimeChanged="AnalogClock_OnTimeChanged" />
+        <TextBox x:Name="TimeTextBox" Text="00:00:00" Margin="10" FontSize="50" />
     </StackPanel>
 </Window>

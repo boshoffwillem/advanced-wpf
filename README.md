@@ -170,3 +170,160 @@ Go to the style of the analog clock.
     x:Name="PART_SecondHand"
     Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}" />
 ```
+
+## 5.Routed Events
+
+Routed events are like normal C# events, just for WPF components.
+
+ We're going to set up an event that updates a text box displaying the current time of the Analog clock control.
+ 
+### Step 1: Define the event
+
+Declare a public static RoutedEvent and register it with the EventManager.
+
+```c#
+public static RoutedEvent TimeChangedEvent =
+    EventManager.RegisterRoutedEvent("TimeChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AnalogClock));
+```
+
+### Step 2: Define the event handler
+
+Set up the event that the RoutedEvent wraps.
+
+```c#
+public event RoutedEventHandler TimeChanged
+{
+    add
+    {
+        AddHandler(TimeChangedEvent, value);
+    }
+    remove
+    {
+        RemoveHandler(TimeChangedEvent, value);
+    }
+}
+```
+
+### Step 3: Invoke the event
+
+Raise the event based on some logic.
+
+```c#
+protected virtual void OnTimeChanged(DateTime time)
+{
+    UpdateClock(time);
+    RaiseEvent(new RoutedEventArgs(TimeChangedEvent, this));
+}
+```
+
+### Step 4: Use the event
+
+The event should now be available
+
+```xaml
+<controls:AnalogClock TimeChanged="AnalogClock_OnTimeChanged" />
+```
+
+### Step 5: Add custom EventArgs
+
+We want an event args from which we can get time.
+Create a new class called TimeChangedEventArgs and inherit from RoutedEventArgs.
+Also, define a property for the new time.
+
+```c#
+public class TimeChangedEventArgs : RoutedEventArgs
+{
+    public DateTime NewTime { get; set; }
+    
+    public TimeChangedEventArgs()
+    {
+    }
+
+    public TimeChangedEventArgs(RoutedEvent routedEvent) : base(routedEvent)
+    {
+    }
+
+    public TimeChangedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source)
+    {
+    }
+}
+```
+
+Currently our RoutedEvent uses the RoutedEventHandler delegate. We need to define a new delegate that uses our TimeChangedEventArgs.
+
+```c#
+public delegate void TimeChangedEventHandler(object sender, TimeChangedEventArgs args);
+
+
+public static RoutedEvent TimeChangedEvent =
+    EventManager.RegisterRoutedEvent("TimeChanged", RoutingStrategy.Bubble, typeof(TimeChangedEventHandler), typeof(AnalogClock));
+    
+    
+protected virtual void OnTimeChanged(DateTime time)
+{
+    UpdateClock(time);
+    RaiseEvent(new TimeChangedEventArgs(TimeChangedEvent, this)
+    {
+        NewTime = time
+    });
+}
+
+
+private void AnalogClock_OnTimeChanged(object Sender, TimeChangedEventArgs E)
+{
+    TimeTextBox.Text = E.NewTime.ToString("HH:mm:ss");
+}
+```
+
+### Routing strategies
+
+Currently the routed event has a strategy of Bubble. The different strategies are:
+
+#### Bubble
+
+When the event is raised, any element that has the element raising the event inside of it, can handle the event.
+
+#### Direct
+
+Only the element firing the event can handle the event.
+
+#### Tunnel
+
+Any element inside the element firing the event can handle the event; so it's the opposite direction of Bubble.
+
+### Different way of custom EventArgs
+
+For very simple event args (has only one property), we can use a built in class instead of defining our own: **RoutedPropertyChangedEventHandler**
+
+It's generic and accepts the type of property you want.
+
+```c#
+public static RoutedEvent TimeChangedEvent =
+    EventManager.RegisterRoutedEvent("TimeChanged", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<DateTime>), typeof(AnalogClock));
+    
+    
+public event RoutedPropertyChangedEventHandler<DateTime> TimeChanged
+{
+    add
+    {
+        AddHandler(TimeChangedEvent, value);
+    }
+    remove
+    {
+        RemoveHandler(TimeChangedEvent, value);
+    }
+}
+
+
+protected virtual void OnTimeChanged(DateTime time)
+{
+    UpdateClock(time);
+    RaiseEvent(new RoutedPropertyChangedEventArgs<DateTime>(DateTime.Now.AddSeconds(-1), DateTime.Now, TimeChangedEvent));
+}
+
+
+private void AnalogClock_OnTimeChanged(object Sender, RoutedPropertyChangedEventArgs<DateTime> E)
+{
+    TimeTextBox.Text = E.NewValue.ToString("HH:mm:ss");
+}
+```
