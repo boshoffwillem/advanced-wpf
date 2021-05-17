@@ -8,6 +8,8 @@ using System.Windows.Threading;
 
 namespace CustomControl.Controls
 {
+    public delegate void TimeChangedEventHandler(object sender, TimeChangedEventArgs args);
+    
     public class AnalogClock : Control
     {
         private Line _hourHand;
@@ -18,10 +20,25 @@ namespace CustomControl.Controls
             DependencyProperty.Register("ShowSeconds", typeof(bool), typeof(AnalogClock),
                 new PropertyMetadata(true));
 
+        public static RoutedEvent TimeChangedEvent =
+            EventManager.RegisterRoutedEvent("TimeChanged", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<DateTime>), typeof(AnalogClock));
+
         public bool ShowSeconds
         {
             get => (bool) GetValue(ShowSecondsProperty);
             set => SetValue(ShowSecondsProperty, value);
+        }
+        
+        public event RoutedPropertyChangedEventHandler<DateTime> TimeChanged
+        {
+            add
+            {
+                AddHandler(TimeChangedEvent, value);
+            }
+            remove
+            {
+                RemoveHandler(TimeChangedEvent, value);
+            }
         }
         
         static AnalogClock()
@@ -46,16 +63,22 @@ namespace CustomControl.Controls
             {
                 Interval = new TimeSpan(0, 0, 1)
             };
-            timer.Tick += (s, e) => UpdateClock();
+            timer.Tick += (s, e) => OnTimeChanged(DateTime.Now);
             timer.Start();
             base.OnApplyTemplate();
         }
 
-        private void UpdateClock()
+        private void UpdateClock(DateTime time)
         {
-            _hourHand.RenderTransform = new RotateTransform((DateTime.Now.Hour / 12.0) * 360, 0.5, 0.5);
-            _minuteHand.RenderTransform = new RotateTransform((DateTime.Now.Minute / 60.0) * 360, 0.5, 0.5);
-            _secondHand.RenderTransform = new RotateTransform((DateTime.Now.Second / 60.0) * 360, 0.5, 0.5);
+            _hourHand.RenderTransform = new RotateTransform((time.Hour / 12.0) * 360, 0.5, 0.5);
+            _minuteHand.RenderTransform = new RotateTransform((time.Minute / 60.0) * 360, 0.5, 0.5);
+            _secondHand.RenderTransform = new RotateTransform((time.Second / 60.0) * 360, 0.5, 0.5);
+        }
+
+        protected virtual void OnTimeChanged(DateTime time)
+        {
+            UpdateClock(time);
+            RaiseEvent(new RoutedPropertyChangedEventArgs<DateTime>(DateTime.Now.AddSeconds(-1), DateTime.Now, TimeChangedEvent));
         }
     }
 }

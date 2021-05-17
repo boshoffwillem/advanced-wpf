@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using CustomControl.Controls;
 
 namespace CustomControl
 {
@@ -10,6 +12,11 @@ namespace CustomControl
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void AnalogClock_OnTimeChanged(object Sender, RoutedPropertyChangedEventArgs<DateTime> E)
+        {
+            TimeTextBox.Text = E.NewValue.ToString("HH:mm:ss");
         }
     }
 }
