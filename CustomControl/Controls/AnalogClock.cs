@@ -78,7 +78,20 @@ namespace CustomControl.Controls
         protected virtual void OnTimeChanged(DateTime time)
         {
             UpdateClock(time);
+            UpdateVisualState(time);
             RaiseEvent(new RoutedPropertyChangedEventArgs<DateTime>(DateTime.Now.AddSeconds(-1), DateTime.Now, TimeChangedEvent));
+        }
+
+        private void UpdateVisualState(DateTime time)
+        {
+            if (time.Hour is > 6 and < 18)
+            {
+                VisualStateManager.GoToState(this, "Day", false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "Night", false);
+            }
         }
     }
 }
