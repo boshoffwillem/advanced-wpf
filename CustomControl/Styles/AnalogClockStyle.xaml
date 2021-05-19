@@ -14,7 +14,7 @@
                         </Grid.RenderTransform>
                         
                         <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="VisualStates">
+                            <VisualStateGroup x:Name="TimeStates">
                                 <VisualState x:Name="Day">
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="ClockFill"

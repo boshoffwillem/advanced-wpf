@@ -16,7 +16,7 @@ namespace CustomControl
 
         private void AnalogClock_OnTimeChanged(object Sender, RoutedPropertyChangedEventArgs<DateTime> E)
         {
-            TimeTextBox.Text = E.NewValue.ToString("HH:mm:ss");
+            //
         }
     }
 }

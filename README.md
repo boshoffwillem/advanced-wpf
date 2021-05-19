@@ -327,3 +327,59 @@ private void AnalogClock_OnTimeChanged(object Sender, RoutedPropertyChangedEvent
     TimeTextBox.Text = E.NewValue.ToString("HH:mm:ss");
 }
 ```
+
+## 6.Control Documentation
+
+You can document custom controls using attributes so that user's know what's in a control in case they want to override to Control's template.
+
+### 6.1 Visual States
+
+Document the various visual states that a control can be in.
+
+```c#
+[TemplateVisualState(Name = "Day", GroupName = "TimeStates")]
+[TemplateVisualState(Name = "Night", GroupName = "TimeStates")]
+public abstract class Clock : Control
+{
+    private void UpdateVisualState(DateTime time)
+    {
+        if (time.Hour is > 6 and < 18)
+        {
+            VisualStateManager.GoToState(this, "Day", false);
+        }
+        else
+        {
+            VisualStateManager.GoToState(this, "Night", false);
+        }
+    }
+```
+
+### 6.2 Custom PARTs
+
+You can document the PARTs of your custom control so that users know to reimplement them when overriding the control template.
+
+```c#
+[TemplatePart(Name = "PART_HourHand", Type = typeof(Line))]
+[TemplatePart(Name = "PART_MinuteHand", Type = typeof(Line))]
+[TemplatePart(Name = "PART_SecondHand", Type = typeof(Line))]
+public class AnalogClock : Clock
+{
+    private Line _hourHand;
+    private Line _minuteHand;
+    private Line _secondHand;
+
+    static AnalogClock()
+    {
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogClock), 
+            new FrameworkPropertyMetadata(typeof(AnalogClock)));
+    }
+
+    public override void OnApplyTemplate()
+    {
+        _hourHand = Template.FindName("PART_HourHand", this) as Line;
+        _minuteHand = Template.FindName("PART_MinuteHand", this) as Line;
+        _secondHand = Template.FindName("PART_SecondHand", this) as Line;
+        base.OnApplyTemplate();
+    }
+}
+```

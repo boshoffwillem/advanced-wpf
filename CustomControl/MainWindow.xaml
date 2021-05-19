@@ -8,8 +8,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="400">
     <StackPanel>
-        <controls:AnalogClock ShowSeconds="False" />
-        <controls:AnalogClock TimeChanged="AnalogClock_OnTimeChanged" />
-        <TextBox x:Name="TimeTextBox" Text="00:00:00" Margin="10" FontSize="50" />
+        <controls:AnalogClock 
+            TimeChanged="AnalogClock_OnTimeChanged"
+            ShowSeconds="True" />
+        <controls:DigitalClock Margin="10"
+                               FontSize="50"
+                               HorizontalAlignment="Center" />
     </StackPanel>
 </Window>
