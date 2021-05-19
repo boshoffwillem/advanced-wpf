@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:CustomControl.Controls">
+    <Style TargetType="TextBox">
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style TargetType="controls:DigitalClock">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:DigitalClock">
+                    <ControlTemplate.Resources>
+                        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+                    </ControlTemplate.Resources>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding CurrentTime.Hour, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, StringFormat=D2}"
+                                 BorderBrush="{TemplateBinding BorderBrush}" />
+                        <TextBox x:Name="PART_Colon" 
+                                 Text=":"
+                                 BorderBrush="{TemplateBinding BorderBrush}" />
+                        <TextBox Text="{Binding CurrentTime.Minute, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, StringFormat=D2}"
+                                 BorderBrush="{TemplateBinding BorderBrush}" />
+                        <TextBox Text=":"
+                                 Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 BorderBrush="{TemplateBinding BorderBrush}" />
+                        <TextBox Text="{Binding CurrentTime.Second, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, StringFormat=D2}"
+                                 Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 BorderBrush="{TemplateBinding BorderBrush}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

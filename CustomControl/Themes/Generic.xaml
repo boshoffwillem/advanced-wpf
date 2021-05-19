@@ -2,5 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="../Styles/AnalogClockStyle.xaml" />
+        <ResourceDictionary Source="../Styles/DigitalClockStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
