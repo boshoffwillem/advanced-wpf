@@ -11,13 +11,16 @@ namespace CustomControl.Controls
     {
         #region Dependency Properties
 
-        public static readonly DependencyProperty ShowSecondsProperty = 
+        public static readonly DependencyProperty ShowSecondsProperty =
             DependencyProperty.Register("ShowSeconds", typeof(bool), typeof(Clock),
                 new PropertyMetadata(true));
 
         public static readonly DependencyProperty CurrentTimeProperty =
-            DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(Clock),
-                new PropertyMetadata(DateTime.Now));
+            DependencyProperty.Register("CurrentTime", 
+                typeof(DateTime), 
+                typeof(Clock),
+                new PropertyMetadata(DateTime.Now, CurrentTimePropertyChanged, CurrentTimeCoerceValue),
+                CurrentTimeValidateValue);
 
         #endregion
 
@@ -25,7 +28,7 @@ namespace CustomControl.Controls
 
         public static readonly RoutedEvent TimeChangedEvent =
             EventManager.RegisterRoutedEvent("TimeChanged", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<DateTime>), typeof(Clock));
-        
+
         public event RoutedPropertyChangedEventHandler<DateTime> TimeChanged
         {
             add => AddHandler(TimeChangedEvent, value);
@@ -38,13 +41,13 @@ namespace CustomControl.Controls
 
         public bool ShowSeconds
         {
-            get => (bool) GetValue(ShowSecondsProperty);
+            get => (bool)GetValue(ShowSecondsProperty);
             set => SetValue(ShowSecondsProperty, value);
         }
 
         public DateTime CurrentTime
         {
-            get => (DateTime) GetValue(CurrentTimeProperty);
+            get => (DateTime)GetValue(CurrentTimeProperty);
             set => SetValue(CurrentTimeProperty, value);
         }
 
@@ -62,6 +65,30 @@ namespace CustomControl.Controls
             {
                 VisualStateManager.GoToState(this, "Night", false);
             }
+        }
+
+        private static void CurrentTimePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not Clock clock) return;
+            if (e.OldValue is not DateTime oldValue) return;
+            if (e.NewValue is not DateTime newValue) return;
+
+            clock.RaiseEvent(new RoutedPropertyChangedEventArgs<DateTime>(oldValue, newValue, TimeChangedEvent));
+        }
+        
+        private static bool CurrentTimeValidateValue(object value)
+        {
+            if (value is not DateTime newValue) return false;
+
+            return true;
+        }
+        
+        private static object CurrentTimeCoerceValue(DependencyObject d, object baseValue)
+        {
+            if (d is not Clock clock) return baseValue;
+            if (baseValue is not DateTime newTime) return baseValue;
+
+            return newTime;
         }
 
         #endregion
@@ -88,7 +115,7 @@ namespace CustomControl.Controls
                 Converter = new BooleanToVisibilityConverter()
             };
             _secondHand.SetBinding(VisibilityProperty, showSecondHandBinding);*/
-            
+
             DispatcherTimer timer = new()
             {
                 Interval = new TimeSpan(0, 0, 1)

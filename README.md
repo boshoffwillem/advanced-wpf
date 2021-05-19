@@ -171,6 +171,39 @@ Go to the style of the analog clock.
     Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}" />
 ```
 
+### 4.2 Dependency Property Metadata
+
+#### 4.2.1 Metadata callbacks
+
+The PropertyMetadata has a parameter for a callback delegate: **PropertyChangedCallback**. 
+WPF suggests using this callback to apply any logic to the DependencyProperty instead of doing it in the setter of Property related to the DependencyProperty.
+The reason for this is that anytime the dependency property is triggered through XAML bindings, it will not call
+the setter of the related Property; it will only execute the callback delegate of the DependencyProperty metadata.
+
+Another callback in the PropertyMetadata is the **CoerceValueCallback**. This callback is very similar
+to the **ValidateValueCallback**. The difference is that when the **ValidateValueCallback** returns false,
+it throws an exception. The **CoerceValueCallback**, however, when it fails to validate, allows you to modify
+the value so that it does pass validation.
+
+**CoerceValueCallback** is called before **PropertyChangedCallback**.
+
+#### 4.2.2 Dependency Property callbacks
+
+There is another callback method that's part of the DependencyProperty and not the PropertyMetadata,
+but it's still sort of like metadata: the **ValidateValueCallback**.
+
+This callback gets called before the **CoerceValueCallback** and the **PropertyChangedCallback**.
+
+What you do with this callback is return true if you're happy with the new value (you validate it);
+if you return false, an ArgumentException gets raised.
+
+#### 4.2.3 CoerceValueCallback vs. ValidateValueCallback
+
+These callbacks are mutually exclusive, however, they should be used in synchrony.
+When you have values that don't validate but they can be changed to be acceptable,
+do so with **CoerceValueCallback**. If you have values that don't validate and they
+cannot change, handle them with **ValidateValueCallback**.
+
 ## 5.Routed Events
 
 Routed events are like normal C# events, just for WPF components.
