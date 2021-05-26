@@ -8,11 +8,21 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="400">
     <StackPanel>
-        <controls:AnalogClock 
-            TimeChanged="AnalogClock_OnTimeChanged"
-            ShowSeconds="True" />
-        <controls:DigitalClock Margin="10"
-                               FontSize="50"
-                               HorizontalAlignment="Center" />
+        <!-- <controls:AnalogClock  -->
+        <!--     TimeChanged="AnalogClock_OnTimeChanged" -->
+        <!--     ShowSeconds="True" /> -->
+        <!-- <controls:DigitalClock Margin="10" -->
+        <!--                        FontSize="50" -->
+        <!--                        HorizontalAlignment="Center" /> -->
+        <controls:ControllableClock Margin="10">
+            <controls:ControllableClock.Clock>
+                <controls:DigitalClock FontSize="48" />
+            </controls:ControllableClock.Clock>
+        </controls:ControllableClock>
+        <controls:ControllableClock Margin="10">
+            <controls:ControllableClock.Clock>
+                <controls:AnalogClock />
+            </controls:ControllableClock.Clock>
+        </controls:ControllableClock>
     </StackPanel>
 </Window>
