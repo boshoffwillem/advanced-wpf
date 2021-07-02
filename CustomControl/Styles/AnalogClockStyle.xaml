@@ -1,18 +1,22 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:CustomControl.Controls">
+                    xmlns:controls="clr-namespace:CustomControl.Controls"
+                    xmlns:converters="clr-namespace:CustomControl.Converters">
     <Style TargetType="controls:AnalogClock">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:AnalogClock">
                     <ControlTemplate.Resources>
                         <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter" />
+                        <converters:GreaterThanMultiConverter x:Key="GreaterThanMultiConverter" />
+                        <converters:DivisionConverter x:Key="DivisionConverter" />
                     </ControlTemplate.Resources>
-                    <Grid RenderTransformOrigin="0.5 0.5">
+                    <Grid x:Name="Clock" 
+                          RenderTransformOrigin="0.5 0.5">
                         <Grid.RenderTransform>
                             <RotateTransform Angle="90" />
                         </Grid.RenderTransform>
-                        
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="TimeStates">
                                 <VisualState x:Name="Day">
@@ -51,9 +55,30 @@
                         </VisualStateManager.VisualStateGroups>
                         <Ellipse Stroke="Black"
                                  StrokeThickness="1"
-                                 Width="210"
-                                 Height="210"
                                  x:Name="PART_Border">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Width"
+                                            Value="{Binding ActualHeight, ElementName=Clock}"/>
+                                    <Setter Property="Height" Value="{Binding ActualWidth, ElementName=Clock}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding Converter="{StaticResource GreaterThanMultiConverter}">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding Path="ActualHeight" ElementName="Clock" />
+                                                        <Binding Path="ActualWidth" ElementName="Clock" />
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
+                                            <DataTrigger.Setters>
+                                                <Setter Property="Height" Value="{Binding ActualWidth, ElementName=Clock}"/>
+                                                <Setter Property="Width" Value="{Binding ActualHeight, ElementName=Clock}" />
+                                            </DataTrigger.Setters>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
                             <Ellipse.Fill>
                                 <SolidColorBrush Color="White" x:Name="ClockFill" />
                             </Ellipse.Fill>
@@ -62,7 +87,7 @@
                               VerticalAlignment="Center"
                               HorizontalAlignment="Center"
                               X1="0"
-                              X2="-75"
+                              X2="{Binding ActualHeight, ElementName=PART_Border, Converter={StaticResource DivisionConverter}, ConverterParameter=-4}"
                               x:Name="PART_HourHand">
                             <Line.Stroke>
                                 <SolidColorBrush Color="Black" x:Name="HourStroke" />
@@ -72,7 +97,7 @@
                               VerticalAlignment="Center"
                               HorizontalAlignment="Center"
                               X1="0"
-                              X2="-100"
+                              X2="{Binding ActualHeight, ElementName=PART_Border, Converter={StaticResource DivisionConverter}, ConverterParameter=-4}"
                               x:Name="PART_MinuteHand">
                             <Line.Stroke>
                                 <SolidColorBrush Color="Black" x:Name="MinuteStroke" />
@@ -82,7 +107,7 @@
                               VerticalAlignment="Center"
                               HorizontalAlignment="Center"
                               X1="0"
-                              X2="-100"
+                              X2="{Binding ActualHeight, ElementName=PART_Border, Converter={StaticResource DivisionConverter}, ConverterParameter=-2.5}"
                               x:Name="PART_SecondHand"
                               Visibility="{TemplateBinding ShowSeconds, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Line.Stroke>
