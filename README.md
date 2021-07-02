@@ -93,7 +93,7 @@ BUT, for it to actually find that style, you have to create a folder called **Th
 Inside that folder create a resource dictionary called **Generic.xaml**. This is where you will merge all custom styles for controls.
 The OverrideMetadata method will look in Themes/Generic.xaml for any custom styles.
 
-## 3.3 Adding custom behaviour
+### 3.3 Adding custom behaviour
 
 When adding behaviour or logic to the control be sure to do it in the override of OnApplyTemplate.
 Otherwise you might try to access the template components/PARTs before it's applied.

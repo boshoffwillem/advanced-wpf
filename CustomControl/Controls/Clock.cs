@@ -19,8 +19,7 @@ namespace CustomControl.Controls
             DependencyProperty.Register("CurrentTime", 
                 typeof(DateTime), 
                 typeof(Clock),
-                new PropertyMetadata(DateTime.Now, CurrentTimePropertyChanged, CurrentTimeCoerceValue),
-                CurrentTimeValidateValue);
+                new PropertyMetadata(DateTime.Now, CurrentTimePropertyChanged));
 
         #endregion
 
@@ -76,21 +75,6 @@ namespace CustomControl.Controls
             clock.RaiseEvent(new RoutedPropertyChangedEventArgs<DateTime>(oldValue, newValue, TimeChangedEvent));
         }
         
-        private static bool CurrentTimeValidateValue(object value)
-        {
-            if (value is not DateTime newValue) return false;
-
-            return true;
-        }
-        
-        private static object CurrentTimeCoerceValue(DependencyObject d, object baseValue)
-        {
-            if (d is not Clock clock) return baseValue;
-            if (baseValue is not DateTime newTime) return baseValue;
-
-            return newTime;
-        }
-
         #endregion
 
         #region Protected Methods
