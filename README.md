@@ -416,3 +416,18 @@ public class AnalogClock : Clock
     }
 }
 ```
+
+## 7.DragDrop
+
+The DragDrop project includes:
+
+- Dragging an object around on a canvas
+- Dragging objects between canvasses
+- Changing the oreder of list view items by dragging them around
+- Dragging list view items bewteen list views
+
+### 7.1 Gotchas
+
+- To enable dragging on a canvas you must set its `Background` property
+- To prevent items from flickering when dragging disable the `IsHitTestVisible` property
+or use `VisualTreeHelper`

@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="DragDrop.Views.ListingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:DragDrop.ViewModels"
+             d:DataContext="{d:DesignInstance viewModels:ListingViewModel}"
+             mc:Ignorable="d"
+             x:Name="root"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="8*"/>
+        </Grid.RowDefinitions>
+        <TextBlock
+            FontSize="24"
+            Grid.Row="0"
+            Text="{Binding ListName}"/>
+        <ListView
+            x:Name="listingItems"
+            AllowDrop="True"
+            DragOver="ListingView_OnDragOver"
+            DragLeave="ListingView_OnDragLeave"
+            Grid.Row="1"
+            ItemsSource="{Binding ListItems}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <!--
+                    This event is to enable the entire list item to be
+                    draggable, and not just the text part.
+                    -->
+                    <EventSetter Event="MouseMove"
+                                 Handler="ListItem_OnMouseMove"/>
+                    
+                    <!--
+                    This event is to enable dragging items over each other.
+                    -->
+                    <EventSetter Event="DragOver"
+                                 Handler="ListItem_DragOver"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock
+                        Text="{Binding Description}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>
