@@ -431,3 +431,12 @@ The DragDrop project includes:
 - To enable dragging on a canvas you must set its `Background` property
 - To prevent items from flickering when dragging disable the `IsHitTestVisible` property
 or use `VisualTreeHelper`
+
+## 8.Async Relay Command
+
+Two ways of doing this:
+
+- Command Class per command
+- Relay command
+
+Both are documented.
